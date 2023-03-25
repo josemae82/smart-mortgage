@@ -1,0 +1,4 @@
+
+> smartmortgageprepayments@0.0.0 start /mortgage/SmartMortgagePrepayments
+> node ./bin/www "start"
+
