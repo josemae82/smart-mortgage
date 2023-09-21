@@ -1,0 +1,39 @@
+<table class="table">
+    <thead>
+        <tr>
+            <th><span> Month </span></th>
+            <th><span> Date </span></th>
+            <th><span> Prepayment </span></th>
+            <th><span> Instalment </span></th>
+            <th><span> Principal </span></th>
+            <th><span> Acc. principal</span></th>
+            <th><span> Interest </span></th>
+            <th><span> Acc. interest</span></th>
+            <th><span> Pending </span></th>
+            <th><span> Notes </span></th>
+        </tr>
+    </thead>
+    <tbody>
+        <% mortgage.instalments.filter(p=>p.date !== null && p.amount>=0 ).forEach(function(m) { %>
+            <tr class="<%= m.today ? 'mark_today': '' %>">
+                <td><strong>
+                        <%= m.month %>
+                    </strong></td>
+                <td style="min-width: 10rem;"><strong>
+                        <%= m.date.toString().substr(0,7) %>
+                    </strong></td>
+                <td><strong>
+                        <%= m.prepayment===null ? '' : m.prepayment %>
+                    </strong></td>
+                <td><input id="amount" value="<%= m.amount %>" disabled /></td>
+                <td><input id="principal" value="<%= m.principal %>" disabled /></td>
+                <td><input id="totalApplied" value="<%= m.totalApplied %>" disabled /></td>
+                <td><input id="interest" value="<%= m.interest %>" disabled /></td>
+                <td><input id="totalInterest" value="<%= m.totalInterest %>" disabled /></td>
+                <td><input id="pending" value="<%= m.pending %>" disabled /></td>
+                <td><span>
+                        <%= m.notes===null ? '' : m.notes %></strong></td>
+            </tr>
+            <% }); %>
+    </tbody>
+</table>

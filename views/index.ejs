@@ -2,56 +2,12 @@
 <html lang="en">
 
 <head>
-    <!-- <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet"
-        integrity="sha384-giJF6kkoqNQ00vy+HMDP7azOuL0xtbfIcaT9wjKHr8RbDVddVHyTfAAsrekwKmP1" crossorigin="anonymous">
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/js/bootstrap.bundle.min.js"
-        integrity="sha384-ygbV9kiqUc6oa4msXn9868pTtWMgiQaeYH7/t7LECLbyPA2x65Kgf80OJFdroafW"
-        crossorigin="anonymous"></script> -->
-        <link  rel="stylesheet"  href="http://localhost:3001/stylesheets/bootstrap.min.css" /> 
-        <script   ></script>
-    <script type="text/javascript" src="http://localhost:3001/javascripts/bootstrap.bundle.min.js">
-        const addPrepayment2 = () => {
+    <title>Smart mortgage</title>
+    <link rel="stylesheet" href="http://localhost:3001/stylesheets/bootstrap.min.css" />
 
-            //fetch('/addPrepayment',{method:'POST', body:{ 'mortgage': JSON.stringify('<%= mortgage %>')  }})
-            //e.preventDefault();
-            //e.stopPropagation();
-            //action="fetch('/calculate',{method:'POST', body:''}).then(response => window.location.reload());"
-            var mortgage = "";//<% - JSON.stringify(mortgage) %>;
-            //console.log('ccc', mortgage)
-            //  let data =  JSON.stringify( mortgage );
-
-            fetch("/addPrepayment", {
-                method: "POST",
-                headers: {
-                    'Accept': 'application/json',
-                    'Content-Type': 'application/json'
-                    // 'Content-Type': 'application/x-www-form-urlencoded',
-                },
-                body: JSON.stringify({ mortgage })
-            }).then(response => response.text()).then((data) => {
-                var div = document.getElementById('prepayments');
-                div.innerHTML = data/*.getElementById('prepayments').innerHTML*/
-            });
-
-            //document.URL +  ' #prepayments'
-
-
-            //.then(response=>response.json()).then(data =>{ <%-mortgage %> = data.mortgage; console.log(data.mortgage); })
-
-            /*
-            .then(res => {
-                const m =  res.json();
-                console.log(res, "Request complete! response:", m);
-                //mortgage = res.json();
-             
-            });*/
-            //fetch('/addPrepayment',{method:'POST', body:{}})
-            //fetch('/addPrepayment',{method:'POST', body:''}
-
-        }
+    <script type="text/javascript">
 
         const setMortgageData = (field, e) => {
-            //console.log( e.target.value.toString());
             setTimeout(() => fetch('/setMortgageData', {
                 method: 'POST',
                 headers: {
@@ -59,17 +15,31 @@
                     'Content-Type': 'application/json'
                 }, body: JSON.stringify({ field, value: e.target.value.toString() })
             }), 1000);
-            //window.location.reload(); return false;
         }
 
-        function submitToCalculate(e) {
-            console.log(e);
-            e.preventDefault();
-            e.stopPropagation();
-            document.mortgage - data.submit();
-
+        const setPrepaymentData = (field, e, index) => {
+            setTimeout(() => fetch('/setPrepaymentData', {
+                method: 'POST',
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json'
+                }, body: JSON.stringify({ field, value: e.target.value.toString(), row: index })
+            }), 1000);
         }
+
+        function submitToCalculate() {
+            fetch("/calculate", {
+                method: "POST",
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json'
+                },
+                body: ''
+            })
+        }
+
     </script>
+    <script type="text/javascript" src="http://localhost:3001/javascripts/bootstrap.bundle.min.js"></script>
     <style>
         body {
             background-color: linen;
@@ -77,7 +47,6 @@
 
         h1 {
             color: maroon;
-            margin-left: 40px;
         }
 
         input {
@@ -86,27 +55,43 @@
             margin-right: 1rem;
         }
 
-        main{
+        main {
             padding: 1rem;
-            margin: 3rem;
+            margin: 1rem;
         }
 
-        table  input {
+        table input {
             text-align: center;
         }
-        table  th {
+
+        table th {
             text-align: center;
         }
-        table  td {
+
+        table td {
             text-align: center;
         }
-        .mark_today{
-            background-color: blueviolet;
+
+        thead {
+            position: sticky;
+            top: 0;
+            background: darkseagreen;
+        }
+
+        .form-boxes {
+            justify-content: space-evenly;
+            align-items: center;
+            align-content: center;
+            flex-wrap: wrap;
+        }
+
+        .mark_today {
+            background-color: cadetblue;
         }
     </style>
 </head>
 
-<body class="container">
+<body class="">
 
     <header>
     </header>
@@ -115,88 +100,60 @@
         <div class="jumbotron">
             <h1>Smart-mortgage with prepayments</h1>
         </div>
-        <div class="container">
-            <form id="mortgage-data" key="mortgage-data" name="mortgage-data" class="d-flex w-75 flex-wrap p-3"
-                action="/calculate" method="POST">
-                <div class="border border-success rounded p-2">
+        <div class="mt-5 ml-5 mr-5">
+            <form id="mortgage-data" key="mortgage-data" name="mortgage-data" class="d-flex w-50 flex-wrap"
+                style="min-width:700px;">
+                <div class="border border-success rounded p-3">
                     <h4 class="">Loan terms</h4>
-                    <div class="p-1 w-100 d-inline-flex"> <span class="w-50"> Amount: </span>
+                    <div class="p-1 w-100 d-inline-flex form-boxes"> <span class="w-50"> Amount (60%: <%=
+                                mortgage.amount * 0.6 %>): </span>
                         <input name="amount" id="amount" onchange="setMortgageData('amount',event)"
-                            value="<%= mortgage.amount %>" /> <span> Exp 60%: <%= mortgage.amount * 0.6 %> </span> </div>
-                    <div class="p-1 w-100 d-inline-flex"> <span class="w-50"> Rate: </span>
+                            value="<%= mortgage.amount %>" />
+                    </div>
+                    <div class="p-1 w-100 d-inline-flex form-boxes"> <span class="w-50"> Rate: </span>
                         <input name="rate" id="rate" onchange="setMortgageData('rate',event)"
-                            value="<%= mortgage.rate %>" /> </div>
-                    <div class="p-1 w-100 d-inline-flex"> <span class="w-50"> Start date(mm/dd/yyyy): </span>
+                            value="<%= mortgage.rate %>" />
+                    </div>
+                    <div class="p-1 w-100 d-inline-flex form-boxes"> <span class="w-50"> Start date(mm/dd/yyyy): </span>
                         <input name="startDate" id="startDate" onchange="setMortgageData('startDate',event)"
-                            value="<%= mortgage.startDate %>" type="date" /> </div>
-                    <div class="p-1 w-100 d-inline-flex"> <span class="w-50"> Duration (years): </span>
+                            value="<%= mortgage.startDate %>" type="date" />
+                    </div>
+                    <div class="p-1 w-100 d-inline-flex form-boxes"> <span class="w-50"> Duration (years): </span>
                         <input name="duration" id="duration" onchange="setMortgageData('duration',event)"
-                            value="<%= mortgage.duration %>" /> </div>
+                            value="<%= mortgage.duration %>" />
+                    </div>
                 </div>
                 <div id="prepayments" class="border border-info rounded p-3 mt-5 w-100">
                     <div class="w-100 justify-content-between d-inline-flex ">
                         <h4 class="">Prepayments</h4>
-                        <button class="btn btn-success m-1"
-                            onclick="fetch('/addPrepayment',{method:'POST', body:''}); window.location.reload(); return false;">Add</button>
+                        <button class="btn btn-success m-1" onclick="fetch('/addPrepayment', { method: 'POST', body: '' });
+                            window.location.reload();  return false;">Add</button>
                     </div>
-                    <ul style="list-style-type: none; w-100; padding-inline-start:0; ">
+                    <ul class=" w-100" style="list-style-type: none; padding-inline-start:0; ">
                         <% mortgage.prepayments.forEach(function(m, i) { %>
-                        <li class="d-inline-flex flex-wrap w-100 " style="place-content: center;" >
-                            <div class="p-1 d-inline-flex"> <span class="p-1 m-auto"> Date: </span>
-                                <input  style="width:125px; margin-left: 1rem; " type="date" name="date<%= i %>"
-                                    value="<%= m.date %>" /> </div>
-                            <div class="p-1 d-inline-flex"> <span class="p-1 m-auto"> Amount: </span>
-                                <input class="" style="width:90px; margin-left: 1rem;" name="amount<%= i %>" value="<%= m.amount %>" />
-                            </div>
-                            <button class="btn btn-danger m-1"
-                                onclick="fetch('/removePrepayment?index=<%= i %>',{method:'POST', body:''}); window.location.reload(); return false;">Remove</button>
-                        </li>
-                        <% }) %>
+                            <li class="d-inline-flex flex-wrap w-100 form-boxes">
+                                <div class="p-1 d-inline-flex"> <span class="p-1 m-auto"> Date: </span>
+                                    <input style="width:150px; margin-left: 1rem; " type="date" name="date<%= i %>"
+                                        value="<%= m.date %>" onchange="setPrepaymentData('date',event, '<%= i %>')" />
+                                </div>
+                                <div class="p-1 d-inline-flex"> <span class="p-1 m-auto"> Amount: </span>
+                                    <input class="" style="width:120px; margin-left: 1rem;" name="amount<%= i %>"
+                                        value="<%= m.amount %>"
+                                        onchange="setPrepaymentData('amount',event, '<%= i %>')" />
+                                </div>
+                                <button class="btn btn-danger m-1"
+                                    onclick="fetch('/removePrepayment?index=<%= i %>',{method:'POST', body:''}); window.location.reload(); return false;">Remove</button>
+                            </li>
+                            <% }) %>
                     </ul>
                 </div>
-                <br />
-                <!-- <input type="submit" class="btn btn-primary mt-5" onclick="submitToCalculate(event)"
-                    value="Calculate" /> -->
-
-                <input type="submit" class="btn btn-primary mt-5" value="Calculate" />
-                <!-- <input type="button" onclick="fetch('/calculate',{method:'POST', body:JSON.stringify('<%= mortgage %>')}).then(response => window.location.reload()); return false;" class="btn btn-primary mt-5"  value="Calculate" /> -->
-
+                <input type="button" class="btn btn-primary mt-5" value="Calculate"
+                    onclick="submitToCalculate(); window.location.reload(); return false;" />
             </form>
             <br />
             <section>
                 <h4>Results</h4>
-                <table class="table">
-                    <thead>
-                        <tr>
-                            <th><span> Month </span></th>
-                            <th><span> Date </span></th>
-                            <th><span> Prepayment </span></th>
-                            <th><span> Instalment </span></th>
-                            <th><span> Principal </span></th>
-                            <th><span> Acc. principal</span></th>
-                            <th><span> Interest </span></th>
-                            <th><span> Acc. interest</span></th>
-                            <th><span> Pending </span></th>
-                            <th><span> Notes </span></th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <% mortgage.instalments.filter(p=>p.date !== null  && p.amount>=0 ).forEach(function(m) { %>
-                        <tr class="<%= m.today ? 'mark_today': '' %>" >
-                            <td><strong><%= m.month %></strong></td>
-                            <td style="min-width: 10rem;"  ><strong><%= m.date.toString().substr(0,7) %></strong></td>
-                            <td><strong><%= m.prepayment === null ? '' : m.prepayment %></strong></td>
-                            <td><input id="amount" value="<%= m.amount %>" disabled /></td>
-                            <td><input id="principal" value="<%= m.principal %>" disabled /></td>
-                            <td><input id="totalApplied" value="<%= m.totalApplied %>" disabled /></td>
-                            <td><input id="interest" value="<%= m.interest %>" disabled /></td>
-                            <td><input id="totalInterest" value="<%= m.totalInterest %>" disabled /></td>
-                            <td><input id="pending" value="<%= m.pending %>" disabled /></td>
-                            <td><span><%= m.notes === null ? '' : m.notes %></strong></td>
-                        </tr>
-                        <% }); %>
-                    </tbody>
-                    </ul>
+                <%- include('./results'); %>
             </section>
         </div>
     </main>
